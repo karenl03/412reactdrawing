@@ -32,6 +32,14 @@ const Clear = ({ onClick }) => {
   );
 };
 
+const Eraser = ({ onClick }) => {
+  return (
+    <Button variant="contained" onClick={onClick}>
+      Eraser
+    </Button>
+  );
+};
+
 
 const Canvas = ({ drawing, color, lineWidth, onMouseDown, onMouseUp }) => {
   const canvasRef = useRef(null);
@@ -82,6 +90,8 @@ function App() {
   const [drawing, setDrawing] = useState(false);
   const [color, setColor] = useState('#000000');
   const [lineWidth, setLineWidth] = useState(5);
+  const [erase, setErase] = useState(false);
+  const [prevColor, setPrevColor] = useState('#000000');
 
   const handleMouseDown = () => {
     setDrawing(true);
@@ -97,7 +107,18 @@ function App() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  const handleErase = () => {
+    setErase(!erase);
+    if (erase) {
+      setPrevColor(color);
+      setColor('#FFFFFF');
+    } else {
+      setColor(prevColor);
+    }   
+  };
+
   const handleColorChange = (e) => {
+    setPrevColor(e.target.value);
     setColor(e.target.value);
   };
 
@@ -117,6 +138,7 @@ function App() {
       <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', paddingTop: '10px' }}>
         <ColorPicker value={color} onChange={handleColorChange} />
         <Slider value={lineWidth} onChange={handleLineWidthChange} />
+        <Eraser onClick={handleErase} />
         <Clear onClick={handleClear} />
       </div>
     </div>
